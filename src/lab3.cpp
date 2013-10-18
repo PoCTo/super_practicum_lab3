@@ -60,6 +60,7 @@ double boundary_b(int x, double t) { // f(x, 0, t)
 }
 
 double f(int x, int y, double t) {
+	if (abs(x -5) < 3 && abs(y - 5) < 3) return 2;
 	return 0;
 }
 
