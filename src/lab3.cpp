@@ -44,6 +44,8 @@ T readValue(const std::string &s) {
 }
 
 double initial(int x, int y) {
+	if ((x-10.0)*(x-10.0) + (y-10.0)*(y-10.0) < 10 * 10)
+		return -10*sqrt(10.0*10.0 - (x-10.0)*(x-10.0) - (y-10.0)*(y-10.0));
 	return 0;
 }
 
@@ -60,7 +62,12 @@ double boundary_b(int x, double t) { // f(x, 0, t)
 }
 
 double f(int x, int y, double t) {
-	if (abs(x -5) < 3 && abs(y - 5) < 3) return 2;
+	//
+	//return sin(2 * M_PI * x / 10) * sin(2 * M_PI * y / 10) * t;
+	if ((x >= 6 && x <= 14 && y >= 4 && y<= 6) || (x >=6 && x <=7 && y >=4 && y <= 12 ) ||
+			(x >=13 && x <=14 && y >=4 && y <= 12 )) {
+		return t;
+	}
 	return 0;
 }
 
@@ -180,7 +187,7 @@ void calculateLayer(double** uOld, double** uNew,
 				deltaT * (uOld[sliceSizeX - 2][y] + uGhostRight[y] - 2 * uOld[sliceSizeX - 1][y]) +
 				deltaT * (uOld[sliceSizeX - 1][y + 1] +
 						uOld[sliceSizeX - 1][y - 1] - 2 * uOld[sliceSizeX - 1][y]) +
-						deltaT * f(0, y, t);
+						deltaT * f(sliceSizeX - 1, y, t);
 	}
 	// golden mean
 	#pragma omp parallel for

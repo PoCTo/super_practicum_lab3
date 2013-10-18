@@ -1,0 +1,636 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 9.0' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       157,          7]
+NotebookDataLength[     24078,        627]
+NotebookOptionsPosition[     22883,        582]
+NotebookOutlinePosition[     23221,        597]
+CellTagsIndexPosition[     23178,        594]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"data2", " ", "=", " ", 
+   RowBox[{"Import", "[", 
+    RowBox[{"\"\</home/pocto/workspace/lab3/Debug/node0.csv\>\"", ",", " ", 
+     RowBox[{"TextDelimiters", "\[Rule]", "\"\<;\>\""}]}], "]"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"size", " ", "=", " ", "20"}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"time", " ", "=", " ", "1000"}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"data", " ", "=", " ", 
+   RowBox[{"Table", "[", 
+    RowBox[{
+     RowBox[{"ToExpression", "[", 
+      RowBox[{"StringSplit", "[", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"data2", "[", 
+          RowBox[{"[", "i", "]"}], "]"}], "[", 
+         RowBox[{"[", "1", "]"}], "]"}], ",", "\"\<;\>\""}], "]"}], "]"}], 
+     ",", 
+     RowBox[{"{", 
+      RowBox[{"i", ",", "1", ",", 
+       RowBox[{
+        RowBox[{"time", "*", "size", "*", "size"}], " ", "+", " ", 
+        RowBox[{"size", "*", "size"}]}]}], "}"}]}], "]"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{"maxF", " ", "=", " ", 
+  RowBox[{"Max", "[", 
+   RowBox[{"Table", "[", 
+    RowBox[{
+     RowBox[{
+      RowBox[{"data", "[", 
+       RowBox[{"[", "i", "]"}], "]"}], "[", 
+      RowBox[{"[", "4", "]"}], "]"}], ",", 
+     RowBox[{"{", 
+      RowBox[{"i", ",", "1", ",", 
+       RowBox[{
+        RowBox[{"time", "*", "size", "*", "size"}], " ", "+", " ", 
+        RowBox[{"size", "*", "size"}]}]}], "}"}]}], "]"}], 
+   "]"}]}], "\[IndentingNewLine]", 
+ RowBox[{"minF", " ", "=", " ", 
+  RowBox[{"Min", "[", 
+   RowBox[{"Table", "[", 
+    RowBox[{
+     RowBox[{
+      RowBox[{"data", "[", 
+       RowBox[{"[", "i", "]"}], "]"}], "[", 
+      RowBox[{"[", "4", "]"}], "]"}], ",", 
+     RowBox[{"{", 
+      RowBox[{"i", ",", "1", ",", 
+       RowBox[{
+        RowBox[{"time", "*", "size", "*", "size"}], " ", "+", " ", 
+        RowBox[{"size", "*", "size"}]}]}], "}"}]}], "]"}], "]"}]}]}], "Input",\
+
+ CellChangeTimes->{{3.591090015063059*^9, 3.591090072213171*^9}, {
+   3.591090351729752*^9, 3.591090357758322*^9}, {3.591091608961019*^9, 
+   3.5910916303821297`*^9}, 3.5910917958016357`*^9, 3.591091878052906*^9, {
+   3.591092136476555*^9, 3.591092194202948*^9}, {3.591092234663596*^9, 
+   3.591092242048039*^9}, {3.591092274560493*^9, 3.5910923297434196`*^9}, {
+   3.5910924209718933`*^9, 3.59109245275039*^9}, {3.591094587729828*^9, 
+   3.591094588985422*^9}, {3.5910946754464207`*^9, 3.59109475846603*^9}, {
+   3.5910947965649548`*^9, 3.59109480119593*^9}, 3.591094901841367*^9, {
+   3.591094939639174*^9, 3.591094942297059*^9}, {3.591094998703081*^9, 
+   3.591095000578703*^9}, 3.591095123251853*^9, 3.5910955563922653`*^9, {
+   3.591095755968557*^9, 3.5910957560356913`*^9}, {3.591098908511756*^9, 
+   3.591098908574232*^9}}],
+
+Cell[BoxData["221.309204`"], "Output",
+ CellChangeTimes->{3.591095048839439*^9, 3.59109513565486*^9, 
+  3.5910953953215303`*^9, 3.591095578135151*^9, 3.591095761100856*^9, 
+  3.591098927339981*^9, 3.591099869634746*^9, 3.5910999970422277`*^9, 
+  3.5911001137854643`*^9, 3.591101216395754*^9, 3.591101296158485*^9}],
+
+Cell[BoxData[
+ RowBox[{"-", "100.`"}]], "Output",
+ CellChangeTimes->{3.591095048839439*^9, 3.59109513565486*^9, 
+  3.5910953953215303`*^9, 3.591095578135151*^9, 3.591095761100856*^9, 
+  3.591098927339981*^9, 3.591099869634746*^9, 3.5910999970422277`*^9, 
+  3.5911001137854643`*^9, 3.591101216395754*^9, 3.591101296717688*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Manipulate", "[", 
+  RowBox[{
+   RowBox[{"ListPlot3D", "[", 
+    RowBox[{
+     RowBox[{"Table", "[", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{
+          RowBox[{"data", "[", 
+           RowBox[{"[", "i", "]"}], "]"}], "[", 
+          RowBox[{"[", "2", "]"}], "]"}], ",", 
+         RowBox[{
+          RowBox[{"data", "[", 
+           RowBox[{"[", "i", "]"}], "]"}], "[", 
+          RowBox[{"[", "3", "]"}], "]"}], ",", 
+         RowBox[{
+          RowBox[{"data", "[", 
+           RowBox[{"[", "i", "]"}], "]"}], "[", 
+          RowBox[{"[", "4", "]"}], "]"}]}], " ", "}"}], ",", 
+       RowBox[{"{", 
+        RowBox[{"i", ",", "u", ",", 
+         RowBox[{"u", "+", 
+          RowBox[{"size", "*", "size"}], " ", "-", " ", "1"}]}], "}"}]}], 
+      "]"}], ",", " ", 
+     RowBox[{"PlotRange", "\[Rule]", 
+      RowBox[{"{", 
+       RowBox[{"minF", ",", "maxF"}], "}"}]}], ",", 
+     RowBox[{"ColorFunction", "\[Rule]", "\"\<TemperatureMap\>\""}]}], "]"}], 
+   ",", 
+   RowBox[{"{", 
+    RowBox[{"u", ",", " ", "1", ",", " ", 
+     RowBox[{
+      RowBox[{"time", "*", "size", "*", "size"}], " ", "+", " ", "1"}], ",", 
+     " ", 
+     RowBox[{"size", "*", "size"}]}], "}"}]}], "]"}]], "Input",
+ CellChangeTimes->CompressedData["
+1:eJxTTMoPSmViYGCQBGIQveqtO0fZwVeOzAd/coHoYxl5piA6Sq/aFkR/U+kI
+B9EWljcjQHTJ4mnxIPptr0UCiH5zyjIVRIeeewumn71IagbRcRN3TQLR34W2
+zgDRE5g+zgTRgX4Mq0B0UkrkOhDt+eXSbhDN5ddzEETX37pzFES7TWc7DqY3
+dLwF0RmnVoLpjTmbpMqB9Kre1dIgetc+/vMgeh2LFJh2/mhxFUR7Zd6+CaKX
+7g16DKILn874CKJb7xlqVgBpJ41KMD3VzdATRKe95PcG0d8M/5WA6E9mDmUg
++tiGnn4QvXl502QQnRInvx6s79q0DSB6W0bNbhCdIByzB0TvubXBpwpIz5Pk
+9QXRZf+NwkG0w/fVESBaqZs/AUQ7z9udCKLXq/zIBtEZqf45IBoAwtbfLQ==
+
+  "]],
+
+Cell[BoxData[
+ TagBox[
+  StyleBox[
+   DynamicModuleBox[{$CellContext`u$$ = 1, Typeset`show$$ = True, 
+    Typeset`bookmarkList$$ = {}, Typeset`bookmarkMode$$ = "Menu", 
+    Typeset`animator$$, Typeset`animvar$$ = 1, Typeset`name$$ = 
+    "\"untitled\"", Typeset`specs$$ = {{
+      Hold[$CellContext`u$$], 1, 400001, 400}}, Typeset`size$$ = {
+    360., {138., 143.}}, Typeset`update$$ = 0, Typeset`initDone$$, 
+    Typeset`skipInitDone$$ = True, $CellContext`u$77782$$ = 0}, 
+    DynamicBox[Manipulate`ManipulateBoxes[
+     1, StandardForm, "Variables" :> {$CellContext`u$$ = 1}, 
+      "ControllerVariables" :> {
+        Hold[$CellContext`u$$, $CellContext`u$77782$$, 0]}, 
+      "OtherVariables" :> {
+       Typeset`show$$, Typeset`bookmarkList$$, Typeset`bookmarkMode$$, 
+        Typeset`animator$$, Typeset`animvar$$, Typeset`name$$, 
+        Typeset`specs$$, Typeset`size$$, Typeset`update$$, Typeset`initDone$$,
+         Typeset`skipInitDone$$}, "Body" :> ListPlot3D[
+        Table[{
+          Part[
+           Part[$CellContext`data, $CellContext`i], 2], 
+          Part[
+           Part[$CellContext`data, $CellContext`i], 3], 
+          Part[
+           Part[$CellContext`data, $CellContext`i], 
+           4]}, {$CellContext`i, $CellContext`u$$, $CellContext`u$$ + \
+$CellContext`size $CellContext`size - 1}], 
+        PlotRange -> {$CellContext`minF, $CellContext`maxF}, ColorFunction -> 
+        "TemperatureMap"], 
+      "Specifications" :> {{$CellContext`u$$, 1, 400001, 400}}, 
+      "Options" :> {}, "DefaultOptions" :> {}],
+     ImageSizeCache->{407., {193., 200.}},
+     SingleEvaluation->True],
+    Deinitialization:>None,
+    DynamicModuleValues:>{},
+    SynchronousInitialization->True,
+    UnsavedVariables:>{Typeset`initDone$$},
+    UntrackedVariables:>{Typeset`size$$}], "Manipulate",
+   Deployed->True,
+   StripOnInput->False],
+  Manipulate`InterpretManipulate[1]]], "Output",
+ CellChangeTimes->{
+  3.591095779882576*^9, 3.5910989309561253`*^9, 3.59109898506609*^9, 
+   3.5910990781526003`*^9, {3.591099142014865*^9, 3.591099151515882*^9}, 
+   3.591099874126444*^9, 3.591099999811965*^9, 3.591100201864743*^9, 
+   3.5911012196050577`*^9, 3.591101300037402*^9}]
+}, Open  ]],
+
+Cell[BoxData[
+ RowBox[{"\[IndentingNewLine]", 
+  RowBox[{
+   RowBox[{"plots", " ", "=", 
+    RowBox[{"Table", "[", 
+     RowBox[{
+      RowBox[{"ListPlot3D", "[", 
+       RowBox[{
+        RowBox[{"Table", "[", 
+         RowBox[{
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{
+             RowBox[{"data", "[", 
+              RowBox[{"[", "i", "]"}], "]"}], "[", 
+             RowBox[{"[", "2", "]"}], "]"}], ",", 
+            RowBox[{
+             RowBox[{"data", "[", 
+              RowBox[{"[", "i", "]"}], "]"}], "[", 
+             RowBox[{"[", "3", "]"}], "]"}], ",", 
+            RowBox[{
+             RowBox[{"data", "[", 
+              RowBox[{"[", "i", "]"}], "]"}], "[", 
+             RowBox[{"[", "4", "]"}], "]"}]}], " ", "}"}], ",", 
+          RowBox[{"{", 
+           RowBox[{"i", ",", "u", ",", 
+            RowBox[{"u", "+", 
+             RowBox[{"size", "*", "size"}], " ", "-", " ", "1"}]}], "}"}]}], 
+         "]"}], ",", " ", 
+        RowBox[{"PlotRange", "\[Rule]", 
+         RowBox[{"{", 
+          RowBox[{"minF", ",", "maxF"}], "}"}]}], ",", 
+        RowBox[{"ColorFunction", "\[Rule]", "\"\<TemperatureMap\>\""}]}], 
+       "]"}], ",", 
+      RowBox[{"{", 
+       RowBox[{"u", ",", " ", "1", ",", " ", 
+        RowBox[{
+         RowBox[{"time", "*", "size", "*", "size"}], " ", "+", " ", "1"}], 
+        ",", " ", 
+        RowBox[{"size", "*", "size"}]}], "}"}]}], "]"}]}], ";"}]}]], "Input",
+ CellChangeTimes->{{3.591092863061614*^9, 3.5910928856043*^9}, {
+   3.5911002786676903`*^9, 3.59110028364725*^9}, 3.591100321979559*^9, {
+   3.59110081213039*^9, 3.591100812367453*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"\[IndentingNewLine]", 
+  RowBox[{"Export", "[", 
+   RowBox[{"\"\</home/pocto/workspace/lab3/ccc.avi\>\"", ",", "plots"}], 
+   "]"}]}]], "Input",
+ CellChangeTimes->{{3.591091028722435*^9, 3.591091028744062*^9}, {
+   3.591091358878518*^9, 3.591091368406095*^9}, {3.591091443803953*^9, 
+   3.591091443881445*^9}, {3.591092696579297*^9, 3.5910927066428337`*^9}, 
+   3.5910928587381268`*^9, {3.591092902297241*^9, 3.591092907983293*^9}, {
+   3.591100546246779*^9, 3.591100546558469*^9}, {3.591101423538472*^9, 
+   3.591101423875469*^9}}],
+
+Cell[BoxData["\<\"/home/pocto/workspace/lab3/ccc.avi\"\>"], "Output",
+ CellChangeTimes->{3.591091368745051*^9, 3.591091444269483*^9, 
+  3.591092809244009*^9, 3.591092921839753*^9, 3.591100708610711*^9, 
+  3.591101864589698*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"ListPointPlot3D", "[", "data1", "]"}]], "Input",
+ CellChangeTimes->{{3.591091031427382*^9, 3.591091056421425*^9}, {
+   3.591091089044031*^9, 3.591091089702063*^9}, 3.591091419716436*^9, {
+   3.591102530421937*^9, 3.591102533061887*^9}}],
+
+Cell[BoxData[
+ Graphics3DBox[
+  {Hue[0.67, 0.6, 0.6], 
+   Point3DBox[
+    NCache[{{0, 0, 5}, {0, 0, 5}, {0, 0, 5}, {0, 0, 5}, {0, 0, 5}, {0, 0, 
+      5}, {0, 0, 5}, {0, 0, 5}, {0, 0, 5}, {0, 0, 
+      5}, {-5, 0, 5 Sinc[5]}, {(-5) Cos[2], (-5) Sin[2], 5 Sinc[5]}, {(-5) 
+       Cos[4], (-5) Sin[4], 5 Sinc[5]}, {(-5) Cos[6], (-5) Sin[6], 5 
+       Sinc[5]}, {(-5) Cos[8], (-5) Sin[8], 5 Sinc[5]}, {(-5) Cos[10], (-5) 
+       Sin[10], 5 Sinc[5]}, {(-5) Cos[12], (-5) Sin[12], 5 Sinc[5]}, {(-5) 
+       Cos[14], (-5) Sin[14], 5 Sinc[5]}, {(-5) Cos[16], (-5) Sin[16], 5 
+       Sinc[5]}, {(-5) Cos[18], (-5) Sin[18], 5 Sinc[5]}, {-10, 0, 5 
+       Sinc[10]}, {(-10) Cos[2], (-10) Sin[2], 5 Sinc[10]}, {(-10) 
+       Cos[4], (-10) Sin[4], 5 Sinc[10]}, {(-10) Cos[6], (-10) Sin[6], 5 
+       Sinc[10]}, {(-10) Cos[8], (-10) Sin[8], 5 Sinc[10]}, {(-10) 
+       Cos[10], (-10) Sin[10], 5 Sinc[10]}, {(-10) Cos[12], (-10) Sin[12], 5 
+       Sinc[10]}, {(-10) Cos[14], (-10) Sin[14], 5 Sinc[10]}, {(-10) 
+       Cos[16], (-10) Sin[16], 5 Sinc[10]}, {(-10) Cos[18], (-10) Sin[18], 5 
+       Sinc[10]}}, {{0, 0, 5}, {0, 0, 5}, {0, 0, 5}, {0, 0, 5}, {0, 0, 5}, {0,
+       0, 5}, {0, 0, 5}, {0, 0, 5}, {0, 0, 5}, {0, 0, 
+      5}, {-5, 0, -0.9589242746631386}, {
+      2.080734182735712, -4.546487134128409, -0.9589242746631386}, {
+      3.2682181043180596`, 
+      3.7840124765396412`, -0.9589242746631386}, {-4.80085143325183, 
+      1.3970774909946293`, -0.9589242746631386}, {
+      0.7275001690430677, -4.946791233116909, -0.9589242746631386}, {
+      4.195357645382262, 
+      2.7201055544468487`, -0.9589242746631386}, {-4.219269793662461, 
+      2.6828645900021746`, -0.9589242746631386}, {-0.683686091039168, \
+-4.953036778474352, -0.9589242746631386}, {4.788297401616923, 
+      1.4395165833253265`, -0.9589242746631386}, {-3.301583541220401, 
+      3.7549362338583805`, -0.9589242746631386}, {-10, 
+       0, -0.2720105554446849}, {
+      4.161468365471424, -9.092974268256818, -0.2720105554446849}, {
+      6.536436208636119, 
+      7.5680249530792825`, -0.2720105554446849}, {-9.60170286650366, 
+      2.7941549819892586`, -0.2720105554446849}, {
+      1.4550003380861354`, -9.893582466233818, -0.2720105554446849}, {
+      8.390715290764524, 
+      5.440211108893697, -0.2720105554446849}, {-8.438539587324922, 
+      5.365729180004349, -0.2720105554446849}, {-1.367372182078336, \
+-9.906073556948703, -0.2720105554446849}, {9.576594803233846, 
+      2.879033166650653, -0.2720105554446849}, {-6.603167082440802, 
+      7.509872467716761, -0.2720105554446849}}]]},
+  Axes->True,
+  BoxRatios->{1, 1, 0.4},
+  ImageSize->{360., 302.1287773088225},
+  PlotRange->
+   NCache[{{-10, (-10) Cos[16]}, {(-10) Sin[14], (-10) Sin[4]}, 
+     Automatic}, {{-10, 9.576594803233846}, {-9.906073556948703, 
+     7.5680249530792825`}, Automatic}],
+  PlotRangePadding->{{
+     Scaled[0.02], 
+     Scaled[0.02]}, {
+     Scaled[0.02], 
+     Scaled[0.02]}, {Automatic, Automatic}},
+  ViewPoint->{1.7479752618471467`, -2.2598447865890883`, 1.8131971830158244`},
+  
+  ViewVertical->{0.18587845084639842`, 0.046257029736241184`, 
+   2.4537082761492393`}]], "Output",
+ CellChangeTimes->{{3.591091036061585*^9, 3.591091056917367*^9}, 
+   3.591091090194188*^9, {3.591091420100346*^9, 3.591091446580415*^9}}]
+}, Open  ]],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"f", "[", 
+   RowBox[{"x_", ",", "y_", ",", "t_"}], "]"}], ":=", 
+  RowBox[{"If", "[", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"6", "\[LessEqual]", "x", "\[LessEqual]", "14"}], " ", "&&", " ", 
+     RowBox[{"4", "\[LessEqual]", "y", "\[LessEqual]", "6"}]}], ",", "t", ",", 
+    RowBox[{"If", "[", 
+     RowBox[{
+      RowBox[{
+       RowBox[{"6", "\[LessEqual]", "x", "\[LessEqual]", "7"}], "&&", 
+       RowBox[{"4", "\[LessEqual]", "y", "\[LessEqual]", "12"}]}], ",", "t", 
+      ",", 
+      RowBox[{"If", "[", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"13", "\[LessEqual]", "x", "\[LessEqual]", "14"}], "&&", 
+         RowBox[{"4", "\[LessEqual]", "y", "\[LessEqual]", "12"}]}], ",", "t",
+         ",", "0"}], "]"}]}], "]"}]}], "]"}]}]], "Input",
+ CellChangeTimes->{{3.5911021210103292`*^9, 3.5911021437740803`*^9}, {
+  3.59110232217761*^9, 3.591102343098259*^9}, {3.5911023750884438`*^9, 
+  3.5911025010039186`*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"f", "[", 
+  RowBox[{"6", ",", "6", ",", "3"}], "]"}]], "Input",
+ CellChangeTimes->{{3.591102507211158*^9, 3.591102519132764*^9}}],
+
+Cell[BoxData["3"], "Output",
+ CellChangeTimes->{{3.591102514327715*^9, 3.591102519477985*^9}}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Manipulate", "[", 
+  RowBox[{
+   RowBox[{"ListPlot3D", "[", 
+    RowBox[{
+     RowBox[{"Table", "[", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{"x", ",", "y", ",", 
+         RowBox[{"f", "[", 
+          RowBox[{"x", ",", "y", ",", "t"}], "]"}]}], "}"}], ",", 
+       RowBox[{"{", 
+        RowBox[{"x", ",", "0", ",", "19"}], "}"}], ",", 
+       RowBox[{"{", 
+        RowBox[{"y", ",", "0", ",", "19"}], "}"}]}], "]"}], ",", " ", 
+     RowBox[{"PlotRange", "\[Rule]", 
+      RowBox[{"{", 
+       RowBox[{"0", ",", 
+        RowBox[{"1000", "/", "24"}]}], "}"}]}], ",", 
+     RowBox[{"ColorFunction", "\[Rule]", "\"\<TemperatureMap\>\""}]}], "]"}], 
+   ",", 
+   RowBox[{"{", 
+    RowBox[{"t", ",", "0", ",", 
+     RowBox[{"1000", "/", "24"}]}], "}"}]}], "]"}]], "Input",
+ CellChangeTimes->{{3.59110252032196*^9, 3.59110264955718*^9}}],
+
+Cell[BoxData[
+ TagBox[
+  StyleBox[
+   DynamicModuleBox[{$CellContext`t$$ = 23.25, Typeset`show$$ = True, 
+    Typeset`bookmarkList$$ = {}, Typeset`bookmarkMode$$ = "Menu", 
+    Typeset`animator$$, Typeset`animvar$$ = 1, Typeset`name$$ = 
+    "\"untitled\"", Typeset`specs$$ = {{
+      Hold[$CellContext`t$$], 0, 
+      Rational[125, 3]}}, Typeset`size$$ = {360., {140., 146.}}, 
+    Typeset`update$$ = 0, Typeset`initDone$$, Typeset`skipInitDone$$ = 
+    True, $CellContext`t$113626$$ = 0}, 
+    DynamicBox[Manipulate`ManipulateBoxes[
+     1, StandardForm, "Variables" :> {$CellContext`t$$ = 0}, 
+      "ControllerVariables" :> {
+        Hold[$CellContext`t$$, $CellContext`t$113626$$, 0]}, 
+      "OtherVariables" :> {
+       Typeset`show$$, Typeset`bookmarkList$$, Typeset`bookmarkMode$$, 
+        Typeset`animator$$, Typeset`animvar$$, Typeset`name$$, 
+        Typeset`specs$$, Typeset`size$$, Typeset`update$$, Typeset`initDone$$,
+         Typeset`skipInitDone$$}, "Body" :> ListPlot3D[
+        Table[{$CellContext`x, $CellContext`y, 
+          $CellContext`f[$CellContext`x, $CellContext`y, $CellContext`t$$]}, \
+{$CellContext`x, 0, 19}, {$CellContext`y, 0, 19}], PlotRange -> {0, 1000/24}, 
+        ColorFunction -> "TemperatureMap"], 
+      "Specifications" :> {{$CellContext`t$$, 0, 
+         Rational[125, 3]}}, "Options" :> {}, "DefaultOptions" :> {}],
+     ImageSizeCache->{407., {184., 191.}},
+     SingleEvaluation->True],
+    Deinitialization:>None,
+    DynamicModuleValues:>{},
+    SynchronousInitialization->True,
+    UnsavedVariables:>{Typeset`initDone$$},
+    UntrackedVariables:>{Typeset`size$$}], "Manipulate",
+   Deployed->True,
+   StripOnInput->False],
+  Manipulate`InterpretManipulate[1]]], "Output",
+ CellChangeTimes->{3.591102651358418*^9}]
+}, Open  ]],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"T", " ", "[", 
+   RowBox[{"i_", ",", "t_"}], "]"}], ":=", 
+  RowBox[{
+   RowBox[{"Table", "[", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{"x", ",", "y", ",", 
+       RowBox[{"f", "[", 
+        RowBox[{"x", ",", "y", ",", "t"}], "]"}]}], "}"}], ",", 
+     RowBox[{"{", 
+      RowBox[{"x", ",", "0", ",", "19"}], "}"}], ",", 
+     RowBox[{"{", 
+      RowBox[{"y", ",", "0", ",", "19"}], "}"}]}], "]"}], "[", 
+   RowBox[{"[", "i", "]"}], "]"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"Asd", "[", "t_", "]"}], " ", ":=", " ", 
+  RowBox[{"Join", "[", 
+   RowBox[{
+    RowBox[{"T", "[", 
+     RowBox[{"1", ",", "t"}], "]"}], ",", 
+    RowBox[{"T", "[", 
+     RowBox[{"2", ",", "t"}], "]"}], ",", 
+    RowBox[{"T", "[", 
+     RowBox[{"3", ",", "t"}], "]"}], ",", 
+    RowBox[{"T", "[", 
+     RowBox[{"4", ",", "t"}], "]"}], ",", 
+    RowBox[{"T", "[", 
+     RowBox[{"5", ",", "t"}], "]"}], ",", 
+    RowBox[{"T", "[", 
+     RowBox[{"6", ",", "t"}], "]"}], ",", 
+    RowBox[{"T", "[", 
+     RowBox[{"7", ",", "t"}], "]"}], ",", 
+    RowBox[{"T", "[", 
+     RowBox[{"8", ",", "t"}], "]"}], ",", 
+    RowBox[{"T", "[", 
+     RowBox[{"9", ",", "t"}], "]"}], ",", 
+    RowBox[{"T", "[", 
+     RowBox[{"10", ",", "t"}], "]"}], ",", 
+    RowBox[{"T", "[", 
+     RowBox[{"11", ",", "t"}], "]"}], ",", 
+    RowBox[{"T", "[", 
+     RowBox[{"12", ",", "t"}], "]"}], ",", 
+    RowBox[{"T", "[", 
+     RowBox[{"13", ",", "t"}], "]"}], ",", 
+    RowBox[{"T", "[", 
+     RowBox[{"14", ",", "t"}], "]"}], ",", 
+    RowBox[{"T", "[", 
+     RowBox[{"15", ",", "t"}], "]"}], ",", 
+    RowBox[{"T", "[", 
+     RowBox[{"16", ",", "t"}], "]"}], ",", 
+    RowBox[{"T", "[", 
+     RowBox[{"17", ",", "t"}], "]"}], ",", 
+    RowBox[{"T", "[", 
+     RowBox[{"18", ",", "t"}], "]"}], ",", 
+    RowBox[{"T", "[", 
+     RowBox[{"19", ",", "t"}], "]"}], ",", 
+    RowBox[{"T", "[", 
+     RowBox[{"20", ",", "t"}], "]"}]}], "]"}]}]}], "Input",
+ CellChangeTimes->{{3.5911026793681*^9, 3.591102730428073*^9}, {
+   3.591102847408452*^9, 3.591102981135188*^9}, {3.591103049976018*^9, 
+   3.591103084243864*^9}, 3.5911033071650553`*^9}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Manipulate", "[", 
+  RowBox[{
+   RowBox[{"ListPlot3D", "[", 
+    RowBox[{
+     RowBox[{"Asd", "[", "t", "]"}], ",", " ", 
+     RowBox[{"PlotRange", "\[Rule]", 
+      RowBox[{"{", 
+       RowBox[{"0", ",", 
+        RowBox[{"1000", "/", "24"}]}], "}"}]}], ",", 
+     RowBox[{"ColorFunction", "\[Rule]", "\"\<TemperatureMap\>\""}]}], "]"}], 
+   ",", 
+   RowBox[{"{", 
+    RowBox[{"t", ",", "0", ",", 
+     RowBox[{"1000", "/", "24"}]}], "}"}]}], "]"}]], "Input",
+ CellChangeTimes->{{3.5911033128005247`*^9, 3.591103337896957*^9}}],
+
+Cell[BoxData[
+ TagBox[
+  StyleBox[
+   DynamicModuleBox[{$CellContext`t$$ = 38.083333333333336`, Typeset`show$$ = 
+    True, Typeset`bookmarkList$$ = {}, Typeset`bookmarkMode$$ = "Menu", 
+    Typeset`animator$$, Typeset`animvar$$ = 1, Typeset`name$$ = 
+    "\"untitled\"", Typeset`specs$$ = {{
+      Hold[$CellContext`t$$], 0, 
+      Rational[125, 3]}}, Typeset`size$$ = {360., {140., 146.}}, 
+    Typeset`update$$ = 0, Typeset`initDone$$, Typeset`skipInitDone$$ = 
+    True, $CellContext`t$116995$$ = 0}, 
+    DynamicBox[Manipulate`ManipulateBoxes[
+     1, StandardForm, "Variables" :> {$CellContext`t$$ = 0}, 
+      "ControllerVariables" :> {
+        Hold[$CellContext`t$$, $CellContext`t$116995$$, 0]}, 
+      "OtherVariables" :> {
+       Typeset`show$$, Typeset`bookmarkList$$, Typeset`bookmarkMode$$, 
+        Typeset`animator$$, Typeset`animvar$$, Typeset`name$$, 
+        Typeset`specs$$, Typeset`size$$, Typeset`update$$, Typeset`initDone$$,
+         Typeset`skipInitDone$$}, "Body" :> ListPlot3D[
+        $CellContext`Asd[$CellContext`t$$], PlotRange -> {0, 1000/24}, 
+        ColorFunction -> "TemperatureMap"], 
+      "Specifications" :> {{$CellContext`t$$, 0, 
+         Rational[125, 3]}}, "Options" :> {}, "DefaultOptions" :> {}],
+     ImageSizeCache->{407., {184., 191.}},
+     SingleEvaluation->True],
+    Deinitialization:>None,
+    DynamicModuleValues:>{},
+    SynchronousInitialization->True,
+    UnsavedVariables:>{Typeset`initDone$$},
+    UntrackedVariables:>{Typeset`size$$}], "Manipulate",
+   Deployed->True,
+   StripOnInput->False],
+  Manipulate`InterpretManipulate[1]]], "Output",
+ CellChangeTimes->{{3.591103314906842*^9, 3.5911033405315733`*^9}}]
+}, Open  ]],
+
+Cell[BoxData[
+ RowBox[{"pls", " ", "=", " ", 
+  RowBox[{"Table", "[", 
+   RowBox[{
+    RowBox[{"ListPlot3D", "[", 
+     RowBox[{
+      RowBox[{"Asd", "[", "t", "]"}], ",", " ", 
+      RowBox[{"PlotRange", "\[Rule]", 
+       RowBox[{"{", 
+        RowBox[{"0", ",", 
+         RowBox[{"1000", "/", "24"}]}], "}"}]}], ",", 
+      RowBox[{"ColorFunction", "\[Rule]", "\"\<TemperatureMap\>\""}]}], "]"}],
+     ",", 
+    RowBox[{"{", 
+     RowBox[{"t", ",", "0", ",", 
+      RowBox[{"1000", "/", "24"}]}], "}"}]}], "]"}]}]], "Input",
+ CellChangeTimes->{{3.5911034308208437`*^9, 3.591103436873722*^9}}]
+},
+WindowSize->{740, 598},
+WindowMargins->{{Automatic, 143}, {25, Automatic}},
+FrontEndVersion->"9.0 for Linux x86 (64-bit) (November 20, 2012)",
+StyleDefinitions->"Default.nb"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[579, 22, 2753, 68, 231, "Input"],
+Cell[3335, 92, 314, 4, 32, "Output"],
+Cell[3652, 98, 325, 5, 32, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[4014, 108, 1715, 46, 121, "Input"],
+Cell[5732, 156, 2184, 46, 410, "Output"]
+}, Open  ]],
+Cell[7931, 205, 1620, 42, 187, "Input"],
+Cell[CellGroupData[{
+Cell[9576, 251, 556, 10, 55, "Input"],
+Cell[10135, 263, 227, 3, 32, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[10399, 271, 260, 4, 32, "Input"],
+Cell[10662, 277, 3281, 61, 317, "Output"]
+}, Open  ]],
+Cell[13958, 341, 962, 23, 55, "Input"],
+Cell[CellGroupData[{
+Cell[14945, 368, 153, 3, 32, "Input"],
+Cell[15101, 373, 94, 1, 32, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[15232, 379, 865, 24, 99, "Input"],
+Cell[16100, 405, 1765, 36, 392, "Output"]
+}, Open  ]],
+Cell[17880, 444, 2140, 62, 121, "Input"],
+Cell[CellGroupData[{
+Cell[20045, 510, 551, 15, 55, "Input"],
+Cell[20599, 527, 1671, 34, 392, "Output"]
+}, Open  ]],
+Cell[22285, 564, 594, 16, 55, "Input"]
+}
+]
+*)
+
+(* End of internal cache information *)
