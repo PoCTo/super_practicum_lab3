@@ -47,19 +47,19 @@ double initial(int x, int y) {
 	return 0;
 }
 
-double boundary_l(int y, int t) { // f(0, y, t)
+double boundary_l(int y, double t) { // f(0, y, t)
 	return 0;
 }
 
-double boundary_r(int y, int t) { // f(X_SIZE - 1, y, t)
+double boundary_r(int y, double t) { // f(X_SIZE - 1, y, t)
 	return 0;
 }
 
-double boundary_b(int x, int t) { // f(x, 0, t)
+double boundary_b(int x, double t) { // f(x, 0, t)
 	return 0;
 }
 
-double boundary_t(int x, int t) { // f(x, Y_SIZE - 1, t)
+double boundary_t(int x, double t) { // f(x, Y_SIZE - 1, t)
 	return 0;
 }
  
