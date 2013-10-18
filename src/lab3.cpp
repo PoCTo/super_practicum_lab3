@@ -102,6 +102,7 @@ void swapGhostCols(double** uOld, double* uGhostLeft, double* uGhostRight, int s
 					neighbourRight, MESSAGE_BOTTOM_LINE,
 					uGhostRight, sliceSizeY, MPI::DOUBLE, neighbourRight, MESSAGE_TOP_LINE);
 		} else {
+			#pragma omp parallel for
 			for (int y = 0; y < sliceSizeY; ++y) {
 				uGhostRight[y] = boundary_r(y, t);
 			}
@@ -111,6 +112,7 @@ void swapGhostCols(double** uOld, double* uGhostLeft, double* uGhostRight, int s
 					neighbourLeft, MESSAGE_TOP_LINE,
 					uGhostLeft, sliceSizeY, MPI::DOUBLE, neighbourLeft, MESSAGE_BOTTOM_LINE);
 		} else {
+			#pragma omp parallel for
 			for (int y = 0; y < sliceSizeY; ++y) {
 				uGhostLeft[y] = boundary_l(y, t);
 			}
@@ -121,6 +123,7 @@ void swapGhostCols(double** uOld, double* uGhostLeft, double* uGhostRight, int s
 					neighbourLeft, MESSAGE_TOP_LINE,
 					uGhostLeft, sliceSizeY, MPI::DOUBLE, neighbourLeft, MESSAGE_BOTTOM_LINE);
 		} else {
+			#pragma omp parallel for
 			for (int y = 0; y < sliceSizeY; ++y) {
 				uGhostLeft[y] = boundary_l(y, t);
 			}
@@ -130,6 +133,7 @@ void swapGhostCols(double** uOld, double* uGhostLeft, double* uGhostRight, int s
 					neighbourRight, MESSAGE_BOTTOM_LINE,
 					uGhostRight, sliceSizeY, MPI::DOUBLE, neighbourRight, MESSAGE_TOP_LINE);
 		} else {
+			#pragma omp parallel for
 			for (int y = 0; y < sliceSizeY; ++y) {
 				uGhostRight[y] = boundary_r(y, t);
 			}
@@ -142,12 +146,14 @@ void calculateLayer(double** uOld, double** uNew,
 		int sliceSizeX, int sliceSizeY, int offsetX,
 		double t, double deltaT) {
 	// boundaries
+	#pragma omp parallel for
 	for (int x = 0; x < sliceSizeX; ++x) {
 		uNew[x][0] = boundary_t(x + offsetX, t);
 		uNew[x][sliceSizeY - 1] = boundary_b(x + offsetX, t);
 	}
 	// left and right colons
-	for (int y = 1; y + 1 < sliceSizeY; ++y) {
+	#pragma omp parallel for
+	for (int y = 1; y < sliceSizeY + 1; ++y) {
 		uNew[0][y] = uOld[0][y] +
 				deltaT * (uOld[1][y] + uGhostLeft[y] - 2 * uOld[0][y]) +
 				deltaT * (uOld[0][y + 1] + uOld[0][y - 1] - 2 * uOld[0][y]);
@@ -157,8 +163,9 @@ void calculateLayer(double** uOld, double** uNew,
 						uOld[sliceSizeX - 1][y - 1] - 2 * uOld[sliceSizeX - 1][y]);
 	}
 	// golden mean
-	for (int x = 1; x + 1 < sliceSizeX - 1; ++x) {
-		for (int y = 1; y + 1 < sliceSizeY - 1; ++y) {
+	#pragma omp parallel for
+	for (int x = 1; x < sliceSizeX - 2; ++x) {
+		for (int y = 1; y < sliceSizeY - 2; ++y) {
 			uNew[x][y] = uOld[x][y] +
 					deltaT * (uOld[x + 1][y] + uOld[x - 1][y] - 2 * uOld[x][y]) +
 					deltaT * (uOld[x][y + 1] + uOld[x][y - 1] - 2 * uOld[x][y]);
@@ -168,6 +175,7 @@ void calculateLayer(double** uOld, double** uNew,
 
 void swapMatrices(double** uOld, double** uNew, int sizeX, int sizeY) {
 	for (int x = 0; x < sizeX; ++x) {
+		#pragma omp parallel for
 		for (int y = 0; y < sizeY; ++y) {
 			swap(uOld[x][y], uNew[x][y]);
 		}
@@ -189,6 +197,7 @@ int main(int argc, char *argv[]) {
 	double startTime = MPI::Wtime();
 
 	ompCount = readValue<int>(argv[1]);
+	omp_set_dynamic(0);
 	omp_set_num_threads(ompCount);
 	sizeX = readValue<int>(argv[2]);
 	sizeY = readValue<int>(argv[3]);
@@ -243,7 +252,7 @@ int main(int argc, char *argv[]) {
 	stringstream nodeIdSs;
 	nodeIdSs << "node" << nodeId << ".csv";
 	ofstream dataStream(nodeIdSs.str().c_str());
-
+	#pragma omp parallel for
 	for (int x = 0; x < sliceSizeX; ++x) {
 		for (int y = 0; y < sliceSizeY; ++y) {
 			uOld[x][y] = initial(x + offsetX, y);
