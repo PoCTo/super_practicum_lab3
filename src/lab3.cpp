@@ -59,6 +59,10 @@ double boundary_b(int x, double t) { // f(x, 0, t)
 	return 0;
 }
 
+double f(int x, int y, double t) {
+	return 0;
+}
+
 double boundary_t(int x, double t) { // f(x, Y_SIZE - 1, t)
 	return 0;
 }
@@ -81,13 +85,26 @@ void destroy(double** matrix, int sizeX, int sizeY) {
 	delete[] matrix;
 }
 
-void printMatrixWithT(ofstream &stream, double** u, int sizeX, int sizeY, int offsetX, double t) {
+void printMatrixWithT(ostream &stream, double** u, int sizeX, int sizeY, int offsetX, double t) {
 	for (int x = 0; x < sizeX; ++x) {
 		for (int y = 0; y < sizeY; ++y) {
 			stream << t << csvDelimiter
 			       << x + offsetX << csvDelimiter
 			       << y << csvDelimiter
 			       << u[x][y] << endl;
+		}
+	}
+}
+
+void printMatrixWithT(FILE* f, double** u, int sizeX, int sizeY, int offsetX, double t) {
+	for (int x = 0; x < sizeX; ++x) {
+		for (int y = 0; y < sizeY; ++y) {
+			fprintf(f, "%f%c%d%c%d%c%f\n", t, csvDelimiter, x + offsetX, csvDelimiter, y, csvDelimiter,
+					u[x][y]);
+			/*stream << t << csvDelimiter
+			       << x + offsetX << csvDelimiter
+			       << y << csvDelimiter
+			       << u[x][y] << endl;*/
 		}
 	}
 }
@@ -102,7 +119,7 @@ void swapGhostCols(double** uOld, double* uGhostLeft, double* uGhostRight, int s
 					neighbourRight, MESSAGE_BOTTOM_LINE,
 					uGhostRight, sliceSizeY, MPI::DOUBLE, neighbourRight, MESSAGE_TOP_LINE);
 		} else {
-			#pragma omp parallel for
+			#pragma omp parallel for shared(uGhostRight, t)
 			for (int y = 0; y < sliceSizeY; ++y) {
 				uGhostRight[y] = boundary_r(y, t);
 			}
@@ -112,7 +129,7 @@ void swapGhostCols(double** uOld, double* uGhostLeft, double* uGhostRight, int s
 					neighbourLeft, MESSAGE_TOP_LINE,
 					uGhostLeft, sliceSizeY, MPI::DOUBLE, neighbourLeft, MESSAGE_BOTTOM_LINE);
 		} else {
-			#pragma omp parallel for
+			#pragma omp parallel for shared(uGhostRight, t)
 			for (int y = 0; y < sliceSizeY; ++y) {
 				uGhostLeft[y] = boundary_l(y, t);
 			}
@@ -123,7 +140,7 @@ void swapGhostCols(double** uOld, double* uGhostLeft, double* uGhostRight, int s
 					neighbourLeft, MESSAGE_TOP_LINE,
 					uGhostLeft, sliceSizeY, MPI::DOUBLE, neighbourLeft, MESSAGE_BOTTOM_LINE);
 		} else {
-			#pragma omp parallel for
+			#pragma omp parallel for shared(uGhostRight, t)
 			for (int y = 0; y < sliceSizeY; ++y) {
 				uGhostLeft[y] = boundary_l(y, t);
 			}
@@ -133,7 +150,7 @@ void swapGhostCols(double** uOld, double* uGhostLeft, double* uGhostRight, int s
 					neighbourRight, MESSAGE_BOTTOM_LINE,
 					uGhostRight, sliceSizeY, MPI::DOUBLE, neighbourRight, MESSAGE_TOP_LINE);
 		} else {
-			#pragma omp parallel for
+			#pragma omp parallel for shared(uGhostRight, t)
 			for (int y = 0; y < sliceSizeY; ++y) {
 				uGhostRight[y] = boundary_r(y, t);
 			}
@@ -156,11 +173,13 @@ void calculateLayer(double** uOld, double** uNew,
 	for (int y = 1; y < sliceSizeY + 1; ++y) {
 		uNew[0][y] = uOld[0][y] +
 				deltaT * (uOld[1][y] + uGhostLeft[y] - 2 * uOld[0][y]) +
-				deltaT * (uOld[0][y + 1] + uOld[0][y - 1] - 2 * uOld[0][y]);
+				deltaT * (uOld[0][y + 1] + uOld[0][y - 1] - 2 * uOld[0][y]) +
+				deltaT * f(0, y, t);
 		uNew[sliceSizeX - 1][y] = uOld[sliceSizeX - 1][y] +
 				deltaT * (uOld[sliceSizeX - 2][y] + uGhostRight[y] - 2 * uOld[sliceSizeX - 1][y]) +
 				deltaT * (uOld[sliceSizeX - 1][y + 1] +
-						uOld[sliceSizeX - 1][y - 1] - 2 * uOld[sliceSizeX - 1][y]);
+						uOld[sliceSizeX - 1][y - 1] - 2 * uOld[sliceSizeX - 1][y]) +
+						deltaT * f(0, y, t);
 	}
 	// golden mean
 	#pragma omp parallel for
@@ -168,12 +187,14 @@ void calculateLayer(double** uOld, double** uNew,
 		for (int y = 1; y < sliceSizeY - 2; ++y) {
 			uNew[x][y] = uOld[x][y] +
 					deltaT * (uOld[x + 1][y] + uOld[x - 1][y] - 2 * uOld[x][y]) +
-					deltaT * (uOld[x][y + 1] + uOld[x][y - 1] - 2 * uOld[x][y]);
+					deltaT * (uOld[x][y + 1] + uOld[x][y - 1] - 2 * uOld[x][y]) +
+					deltaT * f(x, y, t);
 		}
 	}
 }
 
 void swapMatrices(double** uOld, double** uNew, int sizeX, int sizeY) {
+
 	for (int x = 0; x < sizeX; ++x) {
 		#pragma omp parallel for
 		for (int y = 0; y < sizeY; ++y) {
@@ -251,22 +272,24 @@ int main(int argc, char *argv[]) {
 
 	stringstream nodeIdSs;
 	nodeIdSs << "node" << nodeId << ".csv";
-	ofstream dataStream(nodeIdSs.str().c_str());
+	FILE* f = fopen(nodeIdSs.str().c_str(),"w");
 	#pragma omp parallel for
 	for (int x = 0; x < sliceSizeX; ++x) {
 		for (int y = 0; y < sliceSizeY; ++y) {
 			uOld[x][y] = initial(x + offsetX, y);
 		}
 	}
-	printMatrixWithT(dataStream, uOld, sliceSizeX, sliceSizeY, offsetX, 0);
+	printMatrixWithT(f, uOld, sliceSizeX, sliceSizeY, offsetX, 0);
 
 	for (int t = 0; t < sizeT; ++t) {
 		swapGhostCols(uOld, uGhostLeft, uGhostRight, sliceSizeX, sliceSizeY,
 				neighbourLeft, neighbourRight, nodeId, static_cast<double>(t) * deltaT);
 		calculateLayer(uOld, uNew, uGhostLeft, uGhostRight,
 				sliceSizeX, sliceSizeY, offsetX, static_cast<double>(t) * deltaT, deltaT);
-		printMatrixWithT(dataStream, uNew, sliceSizeX, sliceSizeY, offsetX,
-				static_cast<double>(t) * deltaT);
+		//printMatrixWithT(dataStream, uNew, sliceSizeX, sliceSizeY, offsetX,
+		//		static_cast<double>(t) * deltaT);
+		printMatrixWithT(f, uNew, sliceSizeX, sliceSizeY, offsetX,
+						static_cast<double>(t) * deltaT);
 		swapMatrices(uOld, uNew, sliceSizeX, sliceSizeY);
 		#ifdef DEBUG_GHOST_SWAP
 			for (int i = 0; i < sliceSizeY; ++i) {
@@ -277,7 +300,8 @@ int main(int argc, char *argv[]) {
 	}
 
 
-	dataStream.close();
+	fclose(f);
+	//dataStream.close();
 	delete[] uGhostLeft;
 	delete[] uGhostRight;
 	destroy(uOld, sliceSizeX, sliceSizeY);
