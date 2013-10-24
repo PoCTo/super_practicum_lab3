@@ -28,6 +28,8 @@ const char csvDelimiter = ';';
 
 #define MASTER_NODE 0
 
+#define MESSAGE_WRITTEN 43
+
 #define NO_NEIGHBOUR -1
 #define MESSAGE_BOTTOM_LINE 1
 #define MESSAGE_TOP_LINE 2
@@ -179,15 +181,22 @@ void calculateLayer(double** uOld, double** uNew,
 	// left and right colons
 	#pragma omp parallel for
 	for (int y = 1; y < sliceSizeY + 1; ++y) {
-		uNew[0][y] = uOld[0][y] +
+		if (sliceSizeX != 1) {
+			uNew[0][y] = uOld[0][y] +
 				deltaT * (uOld[1][y] + uGhostLeft[y] - 2 * uOld[0][y]) +
 				deltaT * (uOld[0][y + 1] + uOld[0][y - 1] - 2 * uOld[0][y]) +
 				deltaT * f(0, y, t);
-		uNew[sliceSizeX - 1][y] = uOld[sliceSizeX - 1][y] +
+			uNew[sliceSizeX - 1][y] = uOld[sliceSizeX - 1][y] +
 				deltaT * (uOld[sliceSizeX - 2][y] + uGhostRight[y] - 2 * uOld[sliceSizeX - 1][y]) +
 				deltaT * (uOld[sliceSizeX - 1][y + 1] +
 						uOld[sliceSizeX - 1][y - 1] - 2 * uOld[sliceSizeX - 1][y]) +
 						deltaT * f(sliceSizeX - 1, y, t);
+		} else {
+			uNew[0][y] = uOld[0][y] +
+				deltaT * (uGhostRight[y] + uGhostLeft[y] - 2 * uOld[0][y]) +
+				deltaT * (uOld[0][y + 1] + uOld[0][y - 1] - 2 * uOld[0][y]) +
+				deltaT * f(0, y, t);
+		}
 	}
 	// golden mean
 	#pragma omp parallel for
@@ -278,25 +287,21 @@ int main(int argc, char *argv[]) {
 	double* uGhostLeft = new double[sliceSizeY];
 	double* uGhostRight = new double[sliceSizeY];
 
-	stringstream nodeIdSs;
-	nodeIdSs << "node" << nodeId << ".csv";
-	FILE* f = fopen(nodeIdSs.str().c_str(),"w");
+	ostringstream nodeIdSs;
 	#pragma omp parallel for
 	for (int x = 0; x < sliceSizeX; ++x) {
 		for (int y = 0; y < sliceSizeY; ++y) {
 			uOld[x][y] = initial(x + offsetX, y);
 		}
 	}
-	printMatrixWithT(f, uOld, sliceSizeX, sliceSizeY, offsetX, 0);
+	printMatrixWithT(nodeIdSs, uOld, sliceSizeX, sliceSizeY, offsetX, 0);
 
 	for (int t = 0; t < sizeT; ++t) {
 		swapGhostCols(uOld, uGhostLeft, uGhostRight, sliceSizeX, sliceSizeY,
 				neighbourLeft, neighbourRight, nodeId, static_cast<double>(t) * deltaT);
 		calculateLayer(uOld, uNew, uGhostLeft, uGhostRight,
 				sliceSizeX, sliceSizeY, offsetX, static_cast<double>(t) * deltaT, deltaT);
-		//printMatrixWithT(dataStream, uNew, sliceSizeX, sliceSizeY, offsetX,
-		//		static_cast<double>(t) * deltaT);
-		printMatrixWithT(f, uNew, sliceSizeX, sliceSizeY, offsetX,
+		printMatrixWithT(nodeIdSs, uNew, sliceSizeX, sliceSizeY, offsetX,
 						static_cast<double>(t) * deltaT);
 		swapMatrices(uOld, uNew, sliceSizeX, sliceSizeY);
 		#ifdef DEBUG_GHOST_SWAP
@@ -308,12 +313,28 @@ int main(int argc, char *argv[]) {
 	}
 
 
-	fclose(f);
-	//dataStream.close();
 	delete[] uGhostLeft;
 	delete[] uGhostRight;
 	destroy(uOld, sliceSizeX, sliceSizeY);
 	destroy(uNew, sliceSizeX, sliceSizeY);
+
+	if (nodeId == MASTER_NODE) {
+		int ok = 1;
+		FILE* f = fopen("res.csv","a");
+		fprintf(f, "%s", nodeIdSs.str().c_str());
+		fclose(f);
+		MPI::COMM_WORLD.Send(&ok, 1, MPI::INT, 1, MESSAGE_WRITTEN);
+	} else if (nodeId < workerCount) {
+		int ok;
+		MPI::COMM_WORLD.Recv(&ok, 1, MPI::INT, nodeId - 1, MESSAGE_WRITTEN);
+		FILE* f = fopen("res.csv","a");
+		fprintf(f, "%s", nodeIdSs.str().c_str());
+		fclose(f);
+		if (nodeId != workerCount - 1) {                          			
+			MPI::COMM_WORLD.Send(&ok, 1, MPI::INT, nodeId + 1, MESSAGE_WRITTEN);
+		}
+	}
+
 	double endTime = MPI::Wtime();
 
 	MPI::Finalize();
